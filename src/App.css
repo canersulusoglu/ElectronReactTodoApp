@@ -51,6 +51,13 @@ html, body{
   bottom: 30px;
 }
 
+.Body .clearButton{
+  display: flex;
+  position: absolute;
+  left: 30px;
+  bottom: 30px;
+}
+
 .ToDoCard{
   min-width: 250px;
   min-height: 200px;
@@ -108,7 +115,7 @@ html, body{
   width: 20px;
 }
 
-.plusIcon{
+.plusIcon, .deleteAllIcon{
   width: 50px;
 }
 

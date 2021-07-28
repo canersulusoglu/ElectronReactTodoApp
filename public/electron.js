@@ -1,8 +1,14 @@
+const { 
+  app, 
+  BrowserWindow, 
+  Menu, 
+  shell, 
+  Notification, 
+  ipcMain 
+} = require('electron');
 const path = require('path');
-
-const { app, BrowserWindow, Menu, shell } = require('electron');
 const isDev = require('electron-is-dev');
-const isMac = process.platform === 'darwin'
+const isMac = process.platform === 'darwin';
 
 const menuTemplate = [
   // { role: 'appMenu' }
@@ -115,7 +121,7 @@ const myMenuTemplate = [
   }
 ]
 
-const menu = Menu.buildFromTemplate(myMenuTemplate,);
+const menu = Menu.buildFromTemplate(menuTemplate);
 
 function createWindow() {
   // Create the browser window.
@@ -128,7 +134,9 @@ function createWindow() {
     movable: true,
     fullscreenable: true,
     webPreferences: {
-      nodeIntegration: true,
+      preload: path.join(__dirname, './preload.js'),
+      contextIsolation: false,
+      nodeIntegration: true
     },
   });
   Menu.setApplicationMenu(menu);
@@ -166,3 +174,7 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+ipcMain.on('notification', (_, notification) => {
+  new Notification(notification).show();
+})

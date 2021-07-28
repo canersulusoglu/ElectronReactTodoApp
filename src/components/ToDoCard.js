@@ -40,6 +40,7 @@ class ToDoCard extends React.Component{
             })}>
                 <div className="header">
                     <div className="title">{this.props.item.title}</div>
+                    <div>{/*this.props.item.dateTime.format('Do MMMM YYYY, HH:mm')*/}</div>
                 </div>
                 <div className="body">
                     <div className="desc">
