@@ -123,55 +123,54 @@ const myMenuTemplate = [
 
 const menu = Menu.buildFromTemplate(menuTemplate);
 
-function createWindow() {
-  // Create the browser window.
-  const win = new BrowserWindow({
-    width: 1280,
-    height: 720,
-    minWidth: 800,
-    minHeight: 600,
-    resizable: true,
-    movable: true,
-    fullscreenable: true,
-    webPreferences: {
-      preload: path.join(__dirname, './preload.js'),
-      contextIsolation: false,
-      nodeIntegration: true
-    },
-  });
-  Menu.setApplicationMenu(menu);
+function StartApplication(){
+  let MainWindow = null;
+  let LoadingWindow = new BrowserWindow({show: false, frame: false, transparent: true, center: true, width: 300, height: 350});
 
-  // and load the index.html of the app.
-  // win.loadFile("index.html");
-  win.loadURL(
+  LoadingWindow.once('show', () => {
+    MainWindow = new BrowserWindow({
+      show: false,
+      width: 1280,
+      height: 720,
+      minWidth: 800,
+      minHeight: 600,
+      resizable: true,
+      movable: true,
+      fullscreenable: true,
+      webPreferences: {
+        preload: path.join(__dirname, './preload.js'),
+        contextIsolation: false,
+        nodeIntegration: true
+      },
+    });
+    Menu.setApplicationMenu(menu);
+    MainWindow.webContents.once('dom-ready', () => {
+      LoadingWindow.hide();
+      MainWindow.show();
+      LoadingWindow.close();
+    });
+    MainWindow.loadURL(
+      isDev
+        ? 'http://localhost:3000'
+        : `file://${path.join(__dirname, '../build/index.html')}`
+    );
+    if (isDev) {
+      MainWindow.webContents.openDevTools({ mode: 'detach' });
+    }
+  })
+  LoadingWindow.loadURL(
     isDev
-      ? 'http://localhost:3000'
-      : `file://${path.join(__dirname, '../build/index.html')}`
+      ? `file://${path.join(__dirname, '../public/loading.html')}`
+      : `file://${path.join(__dirname, '../build/loading.html')}`
   );
-
-  // Open the DevTools.
-  if (isDev) {
-    win.webContents.openDevTools({ mode: 'detach' });
-  }
+  LoadingWindow.show();
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.whenReady().then(createWindow);
+app.on('ready', StartApplication);
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
-  }
-});
-
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
   }
 });
 

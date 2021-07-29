@@ -1,4 +1,5 @@
-import React, { useState, useReducer } from 'react';
+import React, { useReducer } from 'react';
+import { useTranslation } from 'react-i18next';
 import isElectron from 'is-electron';
 import moment from 'moment';
 import {v4 as uuid} from "uuid"; 
@@ -13,11 +14,12 @@ import {
 import DateTimePicker from './DateTimePicker';
 
 function AddItemModal (props){
+    const { t } = useTranslation();
     const initialState = {
         isModalOpen: false,
         itemTitle: "",
         itemDesc: "",
-        itemDateTime: moment(new Date()),
+        itemDateTime: new Date(),
         titleError: false,
         titleErrorMessage: ""
     };
@@ -30,7 +32,7 @@ function AddItemModal (props){
         case 'itemDateTime':
             return { ...state, itemDateTime: action.payload };
         case 'formError':
-            return{ ...state, titleError: true, titleErrorMessage: "Bu alan boş bırakılmamalıdır."};
+            return{ ...state, titleError: true, titleErrorMessage: t('Form.inputTitleError')};
         case 'resetForm':
             return initialState;
         default:
@@ -49,7 +51,6 @@ function AddItemModal (props){
                 dateTime: state.itemDateTime,
                 isCompleted: false
             }
-            console.log(newItem);
             props.addItem(newItem);
             dispatch({
                 type: 'resetForm'
@@ -87,7 +88,7 @@ function AddItemModal (props){
 
     return(
         <Dialog open={props.open} onClose={props.handleClose} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">Add To Do</DialogTitle>
+            <DialogTitle id="form-dialog-title">{t('Form.title')}</DialogTitle>
             <DialogContent>
                 <TextField
                     onChange={(event) => {
@@ -101,7 +102,7 @@ function AddItemModal (props){
                     variant="outlined"
                     margin="dense"
                     id="title"
-                    label="Title"
+                    label={t('Form.inputTitle')}
                     type="text"
                     fullWidth
                     error={state.titleError}
@@ -119,7 +120,7 @@ function AddItemModal (props){
                     variant="outlined"
                     margin="dense"
                     id="desc"
-                    label="Description"
+                    label={t('Form.inputDesc')}
                     type="text"
                     fullWidth
                     multiline
@@ -130,23 +131,21 @@ function AddItemModal (props){
                 <DateTimePicker
                     value={state.itemDateTime}
                     onChange={(newDate) => {
-                        console.log(newDate.format('Do MMMM YYYY, HH:mm'));
                         dispatch({
                             type: 'itemDateTime',
-                            payload: newDate
+                            payload: newDate.toDate()
                         })
                     }}
+                    label={t('Form.inputDateTime')}
                 />
-
-                <button onClick={Notification}>Click Me!</button>
 
             </DialogContent>
             <DialogActions>
                 <Button onClick={submitForm} color="primary">
-                    Add
+                    {t('Form.submit')}
                 </Button>
                 <Button onClick={props.handleClose} color="primary">
-                    Cancel
+                    {t('Form.cancel')}
                 </Button>
             </DialogActions>
         </Dialog>

@@ -1,8 +1,10 @@
+import { useTranslation } from "react-i18next";
 
-function Header(){
+function Header(props){
+    const { t } = useTranslation();
     return(
         <div className="Header">
-            <h2>To Do App</h2>
+            <h2>{t('Header')}</h2>
         </div>
     )
 }

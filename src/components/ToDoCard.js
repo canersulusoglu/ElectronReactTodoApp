@@ -1,4 +1,6 @@
 import React from 'react';
+import { withTranslation } from 'react-i18next';
+import moment from 'moment';
 import classNames from 'classnames';
 import IconButton from '@material-ui/core/IconButton';
 import ConfirmModal from './ConfirmModal';
@@ -40,12 +42,16 @@ class ToDoCard extends React.Component{
             })}>
                 <div className="header">
                     <div className="title">{this.props.item.title}</div>
-                    <div>{/*this.props.item.dateTime.format('Do MMMM YYYY, HH:mm')*/}</div>
+                    <div>{moment(this.props.item.dateTime).format('Do MMMM YYYY, HH:mm')}</div>
                 </div>
                 <div className="body">
-                    <div className="desc">
-                        {this.props.item.desc}
-                    </div>
+                    {this.props.item.desc 
+                        ?
+                        <div className="desc">
+                            {this.props.item.desc}
+                        </div>
+                        : null
+                    }
                 </div>
                 <div className="footer">
                 {
@@ -65,9 +71,9 @@ class ToDoCard extends React.Component{
                     </IconButton>
                 </div>
 
-                <ConfirmModal 
-                    header="Are you sure to delete this item?" 
-                    message="When you click agree button, selected item will be deleted permanently!" 
+                <ConfirmModal
+                    header={this.props.t('ConfirmDeleteItemModal.header')}
+                    message={this.props.t('ConfirmDeleteItemModal.message')}
                     open={this.state.isConfirmModalOpen} 
                     handleClose={this.closeConfirmModal}
                     handleAgree={this.confirmModalHandleAgree}
@@ -77,4 +83,4 @@ class ToDoCard extends React.Component{
     }
 }
 
-export default ToDoCard;
+export default withTranslation()(ToDoCard);

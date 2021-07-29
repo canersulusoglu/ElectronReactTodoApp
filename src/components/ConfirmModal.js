@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
     Button,
     Dialog,
@@ -14,6 +15,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function ConfirmModal(props) {
+  const { t } = useTranslation();
   return (
     <Dialog
         open={props.open}
@@ -26,15 +28,15 @@ export default function ConfirmModal(props) {
         <DialogTitle id="alert-dialog-slide-title">{props.header}</DialogTitle>
         <DialogContent>
             <DialogContentText id="alert-dialog-slide-description">
-                {props.message}
+              {props.message}
             </DialogContentText>
         </DialogContent>
         <DialogActions>
             <Button onClick={props.handleClose} color="primary">
-            Disagree
+              {t('disagree')}
             </Button>
             <Button onClick={props.handleAgree} color="secondary">
-            Agree
+              {t('agree')}
             </Button>
         </DialogActions>
     </Dialog>

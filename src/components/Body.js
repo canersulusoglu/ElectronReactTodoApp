@@ -1,9 +1,11 @@
 import React from 'react';
+import { withTranslation } from 'react-i18next';
 import { 
     IconButton
  } from '@material-ui/core';
 import ToDoCard from './ToDoCard';
 import AddItemModal from './AddItemModal';
+import ConfirmModal from './ConfirmModal';
 import PlusIcon from '../icons/plus.svg';
 import DeleteIcon from '../icons/delete.svg';
 
@@ -12,6 +14,7 @@ class Body extends React.Component{
         super(props);
         this.state = {
             isModalOpen: false,
+            isConfirmDeleteAllItemsModalOpen: false,
             ToDoList: window.electron.DataStorage.ToDoList
         }
     }
@@ -21,13 +24,6 @@ class Body extends React.Component{
         this.setState({
             ToDoList: await window.electron.DataStorage.ToDoList
         });
-        /*
-        var joined = this.state.ToDoList.concat(newItem);
-        this.setState({
-            ToDoList: joined,
-        });
-        this.closeAddItemModal();
-        */
     }
 
     deleteItem = async (itemId) => {
@@ -35,14 +31,6 @@ class Body extends React.Component{
         this.setState({
             ToDoList: await window.electron.DataStorage.ToDoList
         });
-        /*
-        var index = this.state.ToDoList.findIndex((x) => x.id === itemId);
-        if(index !== -1){
-            let tempItems = [...this.state.ToDoList];
-            tempItems.splice(index, 1);
-            this.setState({ ToDoList: tempItems });
-        }
-        */
     }
 
     deleteAllItems = async () => {
@@ -57,22 +45,6 @@ class Body extends React.Component{
         this.setState({
             ToDoList: await window.electron.DataStorage.ToDoList
         });
-        /*
-        var tempList = this.state.ToDoList.map(item => {
-            if(item.id === itemId){
-                return{
-                    id: itemId,
-                    title: item.title,
-                    desc: item.desc,
-                    dateTime: item.dateTime,
-                    isCompleted: true
-                }
-            }else{
-                return item;
-            }
-        });
-        this.setState({ ToDoList: tempList });
-        */
     }
 
     setUncompleted = async (itemId) =>{
@@ -80,22 +52,6 @@ class Body extends React.Component{
         this.setState({
             ToDoList: await window.electron.DataStorage.ToDoList
         });
-        /*
-        var tempList = this.state.ToDoList.map(item => {
-            if(item.id === itemId){
-                return{
-                    id: itemId,
-                    title: item.title,
-                    desc: item.desc,
-                    dateTime: item.dateTime,
-                    isCompleted: false
-                }
-            }else{
-                return item;
-            }
-        });
-        this.setState({ ToDoList: tempList });
-        */
     }
 
     openAddItemModal = () =>{
@@ -108,6 +64,23 @@ class Body extends React.Component{
         this.setState({
             isModalOpen: false
         })
+    }
+
+    openConfirmDeleteAllItemsModal = () =>{
+        this.setState({
+            isConfirmDeleteAllItemsModalOpen: true
+        })
+    }
+
+    closeConfirmDeleteAllItemsModal = () =>{
+        this.setState({
+            isConfirmDeleteAllItemsModalOpen: false
+        })
+    }
+
+    confirmDeleteAllItemsHandleAgree = () =>{
+        this.deleteAllItems();
+        this.closeConfirmDeleteAllItemsModal();
     }
 
     render(){
@@ -132,11 +105,16 @@ class Body extends React.Component{
                         <img className="plusIcon" src={PlusIcon} alt="add"/>
                     </IconButton>
                 </div>
-                <div className="clearButton">
-                    <IconButton color="secondary" aria-label="deleteAll" onClick={this.deleteAllItems}>
-                        <img className="deleteAllIcon" src={DeleteIcon} alt="deleteAll"/>
-                    </IconButton>
-                </div>
+                {
+                    (this.state.ToDoList.length > 0) 
+                    ?
+                    <div className="clearButton">
+                        <IconButton color="secondary" aria-label="deleteAll" onClick={this.openConfirmDeleteAllItemsModal}>
+                            <img className="deleteAllIcon" src={DeleteIcon} alt="deleteAll"/>
+                        </IconButton>
+                    </div>
+                    : null
+                }
 
                 <AddItemModal
                     open={this.state.isModalOpen}
@@ -144,9 +122,17 @@ class Body extends React.Component{
                     addItem={this.addItem}
                 />
 
+                <ConfirmModal
+                    header={this.props.t('ConfirmDeleteAllItemsModal.header')}
+                    message={this.props.t('ConfirmDeleteAllItemsModal.message')}
+                    open={this.state.isConfirmDeleteAllItemsModalOpen} 
+                    handleClose={this.closeConfirmDeleteAllItemsModal}
+                    handleAgree={this.confirmDeleteAllItemsHandleAgree}
+                />
+
             </div>
         )
     }
 }
 
-export default Body;
+export default withTranslation()(Body);
