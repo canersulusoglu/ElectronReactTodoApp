@@ -65,7 +65,9 @@
   "main": "./public/electron.js",
   "homepage": "./",
   "build": {
-    "appId": "com.example.electron-uspec-app",
+    "productName":"Todo App",
+    "appId": "com.electron.todoApp",
+    "icon": "./build/appIcon512.png",
     "files": [
       "build/**/*",
       "node_modules/**/*"

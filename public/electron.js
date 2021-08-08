@@ -4,13 +4,23 @@ const {
   Menu, 
   shell, 
   Notification, 
-  ipcMain 
+  ipcMain,
+  Tray,
+  dialog
 } = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev');
+const isWindows = process.platform === 'win32';
 const isMac = process.platform === 'darwin';
+const isLinux = process.platform === 'linux';
+const AppTrayLogoPath = path.join(__dirname, "appIcon512.png");
+const ApplicationName = "Todo App";
 
-const menuTemplate = [
+let MainWindow = null;
+let LoadingWindow = null;
+let AppTray = null;
+
+const applicationDevelopmentMenuTemplate = [
   // { role: 'appMenu' }
   ...(isMac ? [{
     label: app.name,
@@ -107,7 +117,7 @@ const menuTemplate = [
   }
 ]
 
-const myMenuTemplate = [
+const applicationMenuTemplate = [
   {
     label: "About",
     submenu:[
@@ -121,12 +131,44 @@ const myMenuTemplate = [
   }
 ]
 
-const menu = Menu.buildFromTemplate(menuTemplate);
+const trayMenuTemplate = [
+  { 
+    label: 'Show App', 
+    click: () => {
+      MainWindow.show();
+    } 
+  },
+  { 
+    label: 'Quit', 
+    click:  () => {
+      const dialogOptions = {
+        title: "Do you really want to close the app?",
+        buttons: ["Yes", "Cancel"],
+        message: "If you close the app, you won't get notifications of your todo list.",
+      };
+      dialog.showMessageBox(MainWindow, dialogOptions)
+      .then(result => {
+        if(result.response === 0){
+          app.isQuiting = true;
+          app.quit();
+        }
+      });
+    }
+  }
+]
+
+const ApplicationDevelopmentMenu = Menu.buildFromTemplate(applicationDevelopmentMenuTemplate);
+const ApplicationMenu = Menu.buildFromTemplate(applicationMenuTemplate);
+const TrayMenu = Menu.buildFromTemplate(trayMenuTemplate);
+
+function LoadTray(){
+  AppTray = new Tray(AppTrayLogoPath);
+  AppTray.setToolTip(ApplicationName);
+  AppTray.setContextMenu(TrayMenu);
+}
 
 function StartApplication(){
-  let MainWindow = null;
-  let LoadingWindow = new BrowserWindow({show: false, frame: false, transparent: true, center: true, width: 300, height: 350});
-
+  LoadingWindow = new BrowserWindow({show: false, frame: false, transparent: true, center: true, width: 300, height: 350});
   LoadingWindow.once('show', () => {
     MainWindow = new BrowserWindow({
       show: false,
@@ -141,21 +183,40 @@ function StartApplication(){
         preload: path.join(__dirname, './preload.js'),
         contextIsolation: false,
         nodeIntegration: true
-      },
+      }
     });
-    Menu.setApplicationMenu(menu);
+  
+    MainWindow.on('minimize',function(event){
+      event.preventDefault();
+      MainWindow.hide();
+    });
+    
+    MainWindow.on('close', function (event) {
+      if(!app.isQuiting){
+        event.preventDefault();
+        MainWindow.hide();
+      }
+      return false;
+    });
+
     MainWindow.webContents.once('dom-ready', () => {
       LoadingWindow.hide();
       MainWindow.show();
       LoadingWindow.close();
+      LoadTray();
     });
+
     MainWindow.loadURL(
       isDev
         ? 'http://localhost:3000'
         : `file://${path.join(__dirname, '../build/index.html')}`
     );
+    
     if (isDev) {
       MainWindow.webContents.openDevTools({ mode: 'detach' });
+      Menu.setApplicationMenu(ApplicationDevelopmentMenu);
+    }else{
+      Menu.setApplicationMenu(ApplicationMenu);
     }
   })
   LoadingWindow.loadURL(
@@ -168,8 +229,12 @@ function StartApplication(){
 
 app.on('ready', StartApplication);
 
+app.on('before-quit', () => {
+  app.isQuiting = true;
+});
+
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+  if (!isMac) {
     app.quit();
   }
 });

@@ -1,7 +1,7 @@
 const { ipcRenderer, contextBridge } = require('electron');
 const DataStorage = require('./DataStorage');
 
-const ToDoListDataStorage = new DataStorage({name: 'ToDoList'});
+export const ToDoListDataStorage = new DataStorage({name: 'ToDoList'});
 
 window.electron = {
     Notifications: {
