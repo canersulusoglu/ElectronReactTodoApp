@@ -13,7 +13,7 @@ const isDev = require('electron-is-dev');
 const isWindows = process.platform === 'win32';
 const isMac = process.platform === 'darwin';
 const isLinux = process.platform === 'linux';
-const AppTrayLogoPath = path.join(__dirname, "appIcon512.png");
+const AppTrayLogoPath = path.join(__dirname, "../assets/icons/appIcon512.png");
 const ApplicationName = "Todo App";
 
 let MainWindow = null;
@@ -239,6 +239,22 @@ app.on('window-all-closed', () => {
   }
 });
 
-ipcMain.on('notification', (_, notification) => {
-  new Notification(notification).show();
+ipcMain.on('alarmNotification', (_, notification) => {
+  const NotificationOptions = {
+    title: notification.title,
+    subtitle: notification.subtitle,
+    body: notification.body,
+    icon: path.join(__dirname, '../assets/icons/notificationIcon.png'),
+    urgency: 'critical',
+    closeButtonText: 'Close Button',
+    actions: [ {
+        type: 'button',
+        text: 'Show Button'
+    }]
+  };
+  const notify = new Notification(NotificationOptions);
+  notify.on('click', () =>{
+    MainWindow.show();
+  });
+  notify.show();
 })

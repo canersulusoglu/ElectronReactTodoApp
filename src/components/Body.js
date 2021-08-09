@@ -1,4 +1,5 @@
 import React from 'react';
+import isElectron from 'is-electron';
 import { withTranslation } from 'react-i18next';
 import { 
     IconButton
@@ -17,6 +18,33 @@ class Body extends React.Component{
             isConfirmDeleteAllItemsModalOpen: false,
             ToDoList: window.electron.DataStorage.ToDoList
         }
+    }
+
+    componentDidMount(){
+        this.alarmControl();
+    }
+
+    alarmControl = () =>{
+        const oneMinute = 60 * 1000;
+        setInterval(async () =>{
+            let list = await window.electron.DataStorage.ToDoList;
+            list.forEach(element => {
+                const itemDate = new Date(Date.parse(element.dateTime));
+                const currentDate = new Date();
+                if(itemDate.getDate() === currentDate.getDate() &&
+                   itemDate.getHours() === currentDate.getHours() &&
+                   itemDate.getMinutes() === currentDate.getMinutes())
+                {
+                    if(isElectron()){
+                        window.electron.Notifications.sendAlarmNotification({
+                            title: element.title,
+                            subtitle: element.title,
+                            body: element.desc,
+                        });
+                    }
+                }
+            });
+        }, oneMinute);
     }
     
     addItem = async (newItem) => {

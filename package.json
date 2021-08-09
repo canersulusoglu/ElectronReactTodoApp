@@ -66,9 +66,9 @@
   "homepage": "./",
   "build": {
     "productName":"Todo App",
-    "appId": "com.electron.todoApp",
-    "icon": "./build/appIcon512.png",
+    "appId": "Todo App",
     "files": [
+      "assets/**/*",
       "build/**/*",
       "node_modules/**/*"
     ],
