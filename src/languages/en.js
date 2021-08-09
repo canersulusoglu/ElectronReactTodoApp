@@ -1,8 +1,8 @@
 const en = {
     translation:{
-        Header: "To Do App",
+        Header: "To Do List",
         Form:{
-            title: "Add to do",
+            title: "Add a card",
             inputTitle: 'Title',
             inputDesc: 'More information',
             inputDateTime: 'Date and time',
@@ -11,12 +11,12 @@ const en = {
             inputTitleError: 'This area can not be empty!'
         },
         ConfirmDeleteItemModal:{
-            header: 'Are you sure to delete this item?',
-            message: 'When you click agree button, selected item will be deleted permanently!'
+            header: 'Are you sure to delete this card?',
+            message: 'When you click agree button, selected card will be deleted permanently!'
         },
         ConfirmDeleteAllItemsModal:{
-            header: 'Are you sure to delete all items?',
-            message: 'When you click agree button, all items will be deleted permanently!'
+            header: 'Are you sure to delete all cards?',
+            message: 'When you click agree button, all cards will be deleted permanently!'
         },
         agree: 'Confirm',
         disagree: 'Cancel',

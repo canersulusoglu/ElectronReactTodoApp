@@ -1,8 +1,8 @@
 const tr = {
     translation:{
-        Header: "Yapılacaklar Uygulaması",
+        Header: "Yapılacaklar Listesi",
         Form:{
-            title: "Yapılacak ekle",
+            title: "Kart ekle",
             inputTitle: 'İsim',
             inputDesc: 'Ayrıntılı bilgi',
             inputDateTime: 'Zaman ve saat',
