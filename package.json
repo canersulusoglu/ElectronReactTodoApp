@@ -48,7 +48,8 @@
     ]
   },
   "devDependencies": {
-    "electron": "^13.1.2"
+    "electron": "^13.1.2",
+    "electron-builder": "^22.14.13"
   },
   "browserslist": {
     "production": [
@@ -65,7 +66,7 @@
   "main": "./public/electron.js",
   "homepage": "./",
   "build": {
-    "productName":"Todo App",
+    "productName": "Todo App",
     "appId": "Todo App",
     "files": [
       "assets/**/*",
