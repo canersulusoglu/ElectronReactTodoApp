@@ -8,4 +8,4 @@ A desktop to do application that is made with Electron.js and React.js.
 
 [React.js](https://reactjs.org) - Version: 17.0.2
 
-[Electron Builder](https://www.electron.build) - Version: 22.8.1
+[Electron Builder](https://www.electron.build) - Version: 22.14.13
