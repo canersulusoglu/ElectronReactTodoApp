@@ -4,10 +4,10 @@ A desktop to do application that is made with Electron.js and React.js.
 
 ## Screenshots
 
-<img width="100%" src="./Screenshots/0.png">
-<img width="100%" src="./Screenshots/1.png">
-<img width="100%" src="./Screenshots/2.png">
-<img width="100%" src="./Screenshots/3.png">
+<img width="100%" src="./Screenshots/0.PNG">
+<img width="100%" src="./Screenshots/1.PNG">
+<img width="100%" src="./Screenshots/2.PNG">
+<img width="100%" src="./Screenshots/3.PNG">
 <p align="center">
 <img width="50%" src="./Screenshots/4.png">
 </p>
