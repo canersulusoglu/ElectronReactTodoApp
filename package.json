@@ -1,6 +1,6 @@
 {
   "name": "todo-app",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "author": "Caner Sülüşoğlu",
   "description": "A desktop to do application that is made with Electron.js and React.js.",
   "keywords": [
